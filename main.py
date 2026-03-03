@@ -20,14 +20,14 @@ prompt = f"""
 
 以下のJSON形式のみで出力せよ。
 
-{
+{{
 "title": "",
 "lines": ["①", "②", "③", "④", "⑤", "⑥", "⑦"],
 "follow": "",
 "next": "",
 "description": "",
 "comment": ""
-}
+}}
 
 絶対にJSON以外の文章を書くな。
 """
