@@ -46,11 +46,15 @@ YouTube Shorts向けの台本を1本作る。
 次▶︎（タイトル）
 説明文＋ハッシュタグ：
 固定コメント：
+出力はプレーンテキストのみ。
+番号は必ず①②③④⑤⑥⑦を使用。
+半角数字禁止。
 """
 
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[{"role": "user", "content": prompt}],
+    temperature=0.4
 )
 
 script = response.choices[0].message.content
