@@ -19,3 +19,5 @@ jobs:
           python-version: "3.11"
       - name: Say hello
         run: echo "workflow ok"
+      - name: Run Python
+        run: python main.py
