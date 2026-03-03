@@ -2,9 +2,8 @@ name: auto_shorts_daily
 
 on:
   schedule:
-    # 毎日 22:00（日本時間）に動かす
-    # GitHub Actions はUTCなので、22:00 JST = 13:00 UTC
-    - cron: '0 10 * * *'
+    # 毎日22:00（JST） = 13:00（UTC）
+    - cron: "0 13 * * *"
   workflow_dispatch:
 
 jobs:
@@ -13,20 +12,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
-  run: |
-    python -m pip install --upgrade pip
-    pip install openai
-          
-      - name: Say hello
-        run: echo "workflow ok"
-        
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Run Python
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
