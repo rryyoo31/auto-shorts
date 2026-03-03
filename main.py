@@ -1,22 +1,33 @@
 import os
-import datetime
+import json
+import random
 from openai import OpenAI
+from datetime import datetime
 
 client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
-# JSTの曜日で判定
-jst_now = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
-weekday = jst_now.strftime("%a")  # Mon Tue Wed Thu Fri Sat Sun
+# =========================
+# テーマランダム化
+# =========================
 
-if weekday in ["Mon", "Tue", "Thu", "Fri"]:
-    theme = "初心者がやるな系（断定・撤退・基準）"
-elif weekday in ["Wed", "Sat"]:
-    theme = "数字・おすすめ系（確率/回転率/持ち玉比率/機種例）"
-else:
-    theme = "焼き直し・強ワード系（初心者の地雷を言い切る）"
+themes = [
+    "初心者がやるな系",
+    "1万円勝負の基準",
+    "撤退ライン",
+    "勝ちを守る思考",
+    "負けパターン分析",
+    "回転率の見方",
+    "感情で打つな",
+]
+
+theme = random.choice(themes)
+
+# =========================
+# プロンプト
+# =========================
 
 prompt = f"""
-今日のテーマ：{theme}
+テーマ：{theme}
 
 以下のJSON形式のみで出力せよ。
 
@@ -29,17 +40,39 @@ prompt = f"""
 "comment": ""
 }}
 
-絶対にJSON以外の文章を書くな。
+条件：
+・断定スタート
+・初心者向け
+・冷静トーン
+・フォロー自然誘導
+・30秒以内
+・JSON以外絶対に出力するな
 """
+
+# =========================
+# GPT実行
+# =========================
 
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[{"role": "user", "content": prompt}],
-    temperature=0.3,
-    response_format={"type": "json_object"}
+    temperature=0.7,
 )
 
-script = response.choices[0].message.content
+content = response.choices[0].message.content
+
+data = json.loads(content)
+
+# =========================
+# 保存
+# =========================
+
+today = datetime.now().strftime("%Y-%m-%d")
+
+os.makedirs("output", exist_ok=True)
+
+with open(f"output/{today}.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
 
 print("===== GENERATED SCRIPT =====")
-print(script)
+print(json.dumps(data, ensure_ascii=False, indent=2))
