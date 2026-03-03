@@ -1,0 +1,18 @@
+name: auto_shorts_daily
+
+on:
+  schedule:
+    # 毎日 22:00（日本時間）に動かす
+    # GitHub Actions はUTCなので、22:00 JST = 13:00 UTC
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Say hello
+        run: echo "workflow ok"
