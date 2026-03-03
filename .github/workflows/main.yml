@@ -28,4 +28,6 @@ jobs:
         run: echo "workflow ok"
         
       - name: Run Python
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python main.py
